@@ -1,0 +1,2391 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Werdience Inc - GINSI Importer Connect</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome 6.4 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            jakarta: ['"Plus Jakarta Sans"', 'sans-serif']
+          },
+          colors: {
+            navy: {
+              950: '#060d1b',
+              900: '#0B1528',
+              850: '#0F1D38',
+              800: '#142546',
+              700: '#1D3560',
+              600: '#274478',
+              card: '#121F38',
+              border: '#1E3156'
+            },
+            ginsi: {
+              blue: '#0062FF',
+              darkblue: '#0047BA',
+              light: '#EBF2FF',
+            },
+            werdience: {
+              orange: '#FF6A00',
+              orangeHover: '#E65C00'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    html, body {
+      overflow-x: hidden;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .input-navy {
+      background-color: #0d1a30;
+      border: 1px solid #1e3256;
+      color: #ffffff;
+    }
+    .input-navy:focus {
+      border-color: #ff6a00;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(255, 106, 0, 0.25);
+    }
+
+    @media (max-width: 767px) {
+      body {
+        min-width: 320px;
+      }
+
+      #view-auth {
+        padding: 0.75rem;
+      }
+
+      #view-auth > div {
+        max-width: 100%;
+        min-height: 0;
+      }
+
+      #view-auth .lg\:col-span-5 {
+        min-height: 220px;
+      }
+
+      #view-auth .lg\:col-span-7 {
+        padding: 1.25rem;
+      }
+
+      #view-auth h2 {
+        font-size: clamp(1.5rem, 5vw, 2.1rem);
+      }
+
+      #view-auth .input-navy,
+      #view-auth input,
+      #view-auth button {
+        font-size: 0.95rem;
+      }
+
+      #portal-container {
+        display: block;
+      }
+
+      #main-sidebar {
+        width: min(82vw, 18rem);
+      }
+
+      header {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+
+      header nav {
+        max-width: 60vw;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      #user-dropdown-menu {
+        right: -0.5rem;
+        width: min(80vw, 14rem);
+      }
+    }
+  </style>
+</head>
+<body class="bg-[#F4F6F9] text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- Toast Notification Container (No Alert) -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- ========================================================================= -->
+  <!-- AUTHENTICATION SCREEN: WERDIENCE INC LOGIN & SIGN UP                     -->
+  <!-- ========================================================================= -->
+  <div id="view-auth" class="fixed inset-0 z-40 bg-navy-900 flex items-center justify-center p-4 overflow-y-auto selection:bg-orange-500 selection:text-white font-jakarta">
+    <div class="w-full max-w-5xl bg-navy-card rounded-2xl shadow-2xl border border-navy-border overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[640px] my-auto">
+      
+      <!-- Visual Side (Cargo Ship Image Container) -->
+      <div class="lg:col-span-5 relative min-h-[280px] lg:min-h-full border-b lg:border-b-0 lg:border-r border-navy-border overflow-hidden bg-navy-950 flex flex-col justify-end">
+        <img 
+          src="assets/ship-cargo.jpg" 
+          alt="Cargo Ship Container" 
+          class="absolute inset-0 w-full h-full object-cover opacity-90 transition-transform duration-700 hover:scale-105"
+          onerror="this.src='https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?auto=format&fit=crop&w=1200&q=80'"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/40 to-transparent"></div>
+        <div class="relative z-10 p-6 sm:p-8 text-white">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30 text-xs font-semibold uppercase tracking-wider mb-2">
+            <i class="fa-solid fa-ship"></i> GINSI Logistics Core
+          </div>
+          <h1 class="text-2xl font-bold tracking-tight text-white leading-tight">GINSI CONNECT</h1>
+          <p class="text-xs text-slate-300 mt-1">Portal Integrasi Impor & Akselerasi Legalitas Kepabeanan GINSI - ORCA CRM.</p>
+        </div>
+      </div>
+
+      <!-- Interactive Form Side -->
+      <div class="lg:col-span-7 p-6 sm:p-10 lg:p-12 flex flex-col justify-between">
+        
+        <!-- LOGIN FORM -->
+        <div id="loginForm" class="flex flex-col justify-center flex-grow">
+          <div class="mb-6">
+            <span class="text-werdience-orange text-xs sm:text-sm font-semibold tracking-wider uppercase">Hello!</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">Welcome back!</h2>
+            <p class="text-slate-400 text-xs sm:text-sm mt-1.5">Let's Login to Your Account (Gunakan email apa saja)</p>
+          </div>
+
+          <form class="space-y-4" onsubmit="handleAuthLogin(event)">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Email / Username</label>
+              <div class="relative">
+                <i class="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                <input 
+                  type="text" 
+                  id="login-email" 
+                  placeholder="Masukkan Email Anda (Semua Email Bebas Masuk)" 
+                  required
+                  value="budi.santoso@globalniaga.co.id"
+                  class="w-full pl-11 pr-4 py-3 rounded-xl input-navy text-sm placeholder-slate-500 transition duration-150"
+                >
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">Contoh: budi@globalniaga.co.id, user@gmail.com, direksi@perusahaan.com</p>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="block text-xs font-semibold text-slate-300">Password</label>
+                <a href="javascript:void(0)" onclick="showToast('Bantuan Password', 'Kredensial demo: Anda dapat memasukkan kata sandi apa saja.')" class="text-xs text-werdience-orange hover:underline">Lupa Password?</a>
+              </div>
+              <div class="relative">
+                <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                <input 
+                  type="password" 
+                  id="login-password" 
+                  placeholder="Password (Bebas / apa saja)" 
+                  required
+                  value="password123"
+                  class="w-full pl-11 pr-4 py-3 rounded-xl input-navy text-sm placeholder-slate-500 transition duration-150"
+                >
+              </div>
+            </div>
+
+            <button 
+              type="submit"
+              id="btn-login-submit"
+              class="w-full py-3.5 px-4 rounded-xl bg-werdience-orange hover:bg-werdience-orangeHover text-white text-sm font-bold shadow-lg shadow-orange-600/30 transition duration-200 active:scale-[0.99] cursor-pointer flex items-center justify-center gap-2"
+            >
+              <i class="fa-solid fa-arrow-right-to-bracket"></i>
+              <span>Login ke Portal GINSI</span>
+            </button>
+          </form>
+
+          <div class="text-center mt-6 text-sm text-slate-400">
+            Don't have an account? 
+            <button type="button" onclick="showSignUp()" class="text-werdience-orange hover:underline font-semibold ml-1 cursor-pointer">
+              Sign In now
+            </button>
+          </div>
+        </div>
+
+        <!-- SIGN UP FORM -->
+        <div id="signUpForm" class="hidden flex flex-col justify-center flex-grow">
+          <div class="mb-5">
+            <span class="text-werdience-orange text-xs sm:text-sm font-semibold tracking-wider uppercase">Hello!</span>
+            <h2 class="text-2xl font-bold text-white mt-1">Nice to meet you!</h2>
+            <p class="text-slate-400 text-xs sm:text-sm mt-1">Let's Sign In Your Account (Daftar dengan email apapun)</p>
+          </div>
+
+          <form class="space-y-3" onsubmit="handleAuthRegister(event)">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Lengkap</label>
+                <input type="text" id="reg-fullname" placeholder="Nama Lengkap" required class="w-full px-3.5 py-2.5 rounded-xl input-navy text-sm placeholder-slate-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Peran / Jabatan</label>
+                <input type="text" id="reg-nickname" placeholder="Direktur / Staff Impor" required class="w-full px-3.5 py-2.5 rounded-xl input-navy text-sm placeholder-slate-500">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Nomor WhatsApp / Telp</label>
+                <input type="tel" id="reg-phone" placeholder="+62 812-xxxx-xxxx" required class="w-full px-3.5 py-2.5 rounded-xl input-navy text-sm placeholder-slate-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Email Perusahaan / Pribadi</label>
+                <input type="email" id="reg-email" placeholder="Semua email diterima" required class="w-full px-3.5 py-2.5 rounded-xl input-navy text-sm placeholder-slate-500">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+                <input type="password" placeholder="Password" required class="w-full px-3.5 py-2.5 rounded-xl input-navy text-sm placeholder-slate-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Konfirmasi Password</label>
+                <input type="password" placeholder="Konfirmasi Password" required class="w-full px-3.5 py-2.5 rounded-xl input-navy text-sm placeholder-slate-500">
+              </div>
+            </div>
+
+            <button type="submit" class="w-full mt-2 py-3 px-4 rounded-xl bg-werdience-orange hover:bg-werdience-orangeHover text-white text-sm font-bold shadow-lg shadow-orange-600/30 transition duration-200 active:scale-[0.99] cursor-pointer">
+              Daftar & Masuk Langsung
+            </button>
+          </form>
+
+          <div class="text-center mt-4 text-xs sm:text-sm text-slate-400">
+            Already have an account? 
+            <button type="button" onclick="showLogin()" class="text-werdience-orange hover:underline font-semibold ml-1 cursor-pointer">
+              Login Now
+            </button>
+          </div>
+        </div>
+
+        <!-- Footer Links -->
+        <div class="pt-5 mt-5 border-t border-navy-border flex justify-center space-x-6 text-xs text-slate-500">
+          <a href="javascript:void(0)" onclick="showToast('Kebijakan Privasi', 'Kebijakan privasi portal terikat kepatuhan data importir GINSI.')" class="hover:text-slate-300 transition">Privacy Policy</a>
+          <span>&bull;</span>
+          <a href="javascript:void(0)" onclick="showToast('Cookies', 'Pengaturan cookie preferensi sesi tersimpan.')" class="hover:text-slate-300 transition">Cookies Settings</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODALS SYSTEM (Add Contact, Upload Document, Create Request)             -->
+  <!-- ========================================================================= -->
+
+  <!-- Modal: Tambah Kontak PIC -->
+  <div id="modal-tambah-kontak" class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden fade-in border border-slate-100">
+      <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+          <i class="fa-solid fa-user-plus text-ginsi-blue"></i> Tambah Kontak / PIC Baru
+        </h3>
+        <button onclick="closeModal('modal-tambah-kontak')" class="text-slate-400 hover:text-slate-600 p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <form id="form-tambah-kontak" onsubmit="handleTambahKontak(event)" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap</label>
+          <input type="text" id="contact-name" required placeholder="Contoh: Rian Anggara" class="w-full text-sm px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-ginsi-blue">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Jabatan / Posisi</label>
+          <input type="text" id="contact-role" required placeholder="Contoh: PIC Logistik & Dokumen" class="w-full text-sm px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-ginsi-blue">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Email Resmi</label>
+          <input type="email" id="contact-email" required placeholder="rian.a@globalniaga.co.id" class="w-full text-sm px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-ginsi-blue">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Nomor WhatsApp / Telepon</label>
+          <input type="tel" id="contact-phone" required placeholder="+62 812-xxxx-xxxx" class="w-full text-sm px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-ginsi-blue">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Tingkat Hak Akses</label>
+          <select id="contact-access" class="w-full text-sm px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-ginsi-blue bg-white">
+            <option value="Akses Staf">Akses Staf (Operasional)</option>
+            <option value="Akses Keuangan">Akses Keuangan</option>
+            <option value="Akses Utama">Akses Utama (Direksi)</option>
+          </select>
+        </div>
+        <div class="pt-3 flex gap-3">
+          <button type="button" onclick="closeModal('modal-tambah-kontak')" class="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 text-sm font-medium text-slate-600 hover:bg-slate-50">Batal</button>
+          <button type="submit" class="flex-1 px-4 py-2.5 rounded-lg bg-ginsi-blue hover:bg-ginsi-darkblue text-white text-sm font-medium transition shadow-sm">Simpan Kontak</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Unggah Dokumen -->
+  <div id="modal-upload-dokumen" class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden fade-in border border-slate-100">
+      <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2" id="modal-doc-title">
+          <i class="fa-solid fa-file-arrow-up text-ginsi-blue"></i> Unggah / Perbarui Dokumen
+        </h3>
+        <button onclick="closeModal('modal-upload-dokumen')" class="text-slate-400 hover:text-slate-600 p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <form id="form-upload-dokumen" onsubmit="handleUploadDoc(event)" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Nama / Jenis Dokumen</label>
+          <input type="text" id="doc-type-input" readonly class="w-full text-sm px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-100 text-slate-700 font-medium">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">File Dokumen (PDF, Maks 10MB)</label>
+          <div class="border-2 border-dashed border-slate-300 hover:border-ginsi-blue rounded-xl p-6 text-center cursor-pointer bg-slate-50/50 transition" onclick="document.getElementById('doc-file-input').click()">
+            <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-400 mb-2"></i>
+            <p class="text-xs font-medium text-slate-700" id="file-label-text">Klik untuk memilih berkas atau seret ke sini</p>
+            <p class="text-[11px] text-slate-400 mt-1">Format: .PDF, .JPG, atau .PNG resmi bertandatangan</p>
+            <input type="file" id="doc-file-input" class="hidden" onchange="previewUploadedFile(this)">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Catatan Tambahan untuk Verifikator (Opsional)</label>
+          <textarea rows="2" placeholder="Tuliskan catatan perbaikan jika ada..." class="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-ginsi-blue"></textarea>
+        </div>
+        <div class="pt-2 flex gap-3">
+          <button type="button" onclick="closeModal('modal-upload-dokumen')" class="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 text-sm font-medium text-slate-600 hover:bg-slate-50">Tutup</button>
+          <button type="submit" class="flex-1 px-4 py-2.5 rounded-lg bg-ginsi-blue hover:bg-ginsi-darkblue text-white text-sm font-medium transition shadow-sm">Kirim untuk Verifikasi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Buat Permintaan Baru -->
+  <div id="modal-buat-permintaan" class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full overflow-hidden fade-in border border-slate-100">
+      <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+          <i class="fa-solid fa-paper-plane text-ginsi-blue"></i> Buat Permintaan Baru
+        </h3>
+        <button onclick="closeModal('modal-buat-permintaan')" class="text-slate-400 hover:text-slate-600 p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <form id="form-buat-permintaan" onsubmit="handleBuatPermintaan(event)" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Kategori Permintaan</label>
+          <select id="req-category" class="w-full text-sm px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-ginsi-blue bg-white">
+            <option value="Verifikasi & Legalitas">Verifikasi & Legalitas Keanggotaan</option>
+            <option value="Akselerasi Program Impor">Akselerasi Program Impor GINSI-ORCA</option>
+            <option value="Konsultasi Regulasi & HS Code">Konsultasi Regulasi & HS Code</option>
+            <option value="Bantuan Akses Portal & PIC">Bantuan Akses Portal & Perubahan PIC</option>
+            <option value="Lainnya">Layanan Pendampingan Kepabeanan Lainnya</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Judul Permintaan</label>
+          <input type="text" id="req-title" required placeholder="Contoh: Permohonan Validasi Perubahan Rekening & API-U" class="w-full text-sm px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-ginsi-blue">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Detail Kebutuhan / Permohonan</label>
+          <textarea id="req-desc" required rows="3" placeholder="Jelaskan kebutuhan impor atau kendala yang dihadapi secara rinci..." class="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-ginsi-blue"></textarea>
+        </div>
+        <div class="pt-2 flex gap-3">
+          <button type="button" onclick="closeModal('modal-buat-permintaan')" class="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 text-sm font-medium text-slate-600 hover:bg-slate-50">Batal</button>
+          <button type="submit" class="flex-1 px-4 py-2.5 rounded-lg bg-ginsi-blue hover:bg-ginsi-darkblue text-white text-sm font-medium transition shadow-sm">Kirim Permintaan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN APPLICATION WRAPPER (GINSI PORTAL 8 SCREENS)                         -->
+  <!-- ========================================================================= -->
+  <div id="portal-container" class="flex-1 flex overflow-hidden min-h-screen">
+
+    <!-- SIDEBAR: Dark Navy Sidebar -->
+    <aside id="main-sidebar" class="w-64 bg-navy-900 text-slate-300 flex flex-col flex-shrink-0 transition-all duration-300 z-30 fixed inset-y-0 left-0 md:static -translate-x-full md:translate-x-0 shadow-xl">
+      <!-- Logo Header -->
+      <div class="h-16 flex items-center px-5 border-b border-navy-800 gap-3">
+        <div class="w-9 h-9 rounded-lg bg-ginsi-blue flex items-center justify-center text-white shadow-md font-bold text-lg tracking-wider">
+          G
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="font-extrabold text-white text-base tracking-wide">GINSI</span>
+          </div>
+          <p class="text-[11px] text-slate-400 font-medium leading-none">Importer Connect</p>
+        </div>
+        <!-- Close Mobile Button -->
+        <button onclick="toggleSidebar()" class="md:hidden ml-auto text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Navigation Links (8 Views) -->
+      <div class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+        <a href="javascript:void(0)" onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition text-white bg-ginsi-blue shadow-sm">
+          <i class="fa-solid fa-table-columns w-5 text-center text-base"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="javascript:void(0)" onclick="switchTab('my-company')" id="nav-my-company" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-navy-850">
+          <i class="fa-solid fa-building w-5 text-center text-base"></i>
+          <span>My Company</span>
+        </a>
+        <a href="javascript:void(0)" onclick="switchTab('contacts')" id="nav-contacts" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-navy-850">
+          <i class="fa-solid fa-users w-5 text-center text-base"></i>
+          <span>Kontak & PIC</span>
+        </a>
+        <a href="javascript:void(0)" onclick="switchTab('requests')" id="nav-requests" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-navy-850">
+          <i class="fa-solid fa-envelope-open-text w-5 text-center text-base"></i>
+          <span>Permintaan Saya</span>
+        </a>
+        <a href="javascript:void(0)" onclick="switchTab('programs')" id="nav-programs" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-navy-850">
+          <i class="fa-solid fa-chart-line w-5 text-center text-base"></i>
+          <span>Kebutuhan & Program</span>
+        </a>
+        <a href="javascript:void(0)" onclick="switchTab('documents')" id="nav-documents" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-navy-850">
+          <i class="fa-solid fa-folder-open w-5 text-center text-base"></i>
+          <span>Pusat Dokumen</span>
+        </a>
+        <a href="javascript:void(0)" onclick="switchTab('preferences')" id="nav-preferences" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-navy-850">
+          <i class="fa-solid fa-sliders w-5 text-center text-base"></i>
+          <span>Pusat Preferensi</span>
+        </a>
+      </div>
+
+      <!-- Sidebar Bottom Company Card & Logout -->
+      <div class="p-3 border-t border-navy-800 space-y-2">
+        <div class="bg-navy-850 rounded-xl p-3 border border-navy-800 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-navy-700 flex items-center justify-center font-bold text-white text-sm shadow">
+            GJ
+          </div>
+          <div class="overflow-hidden">
+            <h4 class="text-xs font-bold text-white truncate">PT. Global Niaga Jaya</h4>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="text-[11px] text-slate-400 font-medium truncate">Level L2: Verification Ready</span>
+            </div>
+          </div>
+        </div>
+
+        <button 
+          onclick="handleLogout()" 
+          class="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg transition"
+        >
+          <i class="fa-solid fa-power-off"></i>
+          <span>Keluar ke Halaman Login</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Overlay for mobile sidebar -->
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-20 hidden md:hidden"></div>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+
+      <!-- Top Navbar -->
+      <header class="h-16 bg-white border-b border-slate-200/80 sticky top-0 z-20 flex items-center justify-between px-4 sm:px-6">
+        <!-- Left: Mobile toggle + Dynamic Breadcrumb -->
+        <div class="flex items-center gap-3">
+          <button onclick="toggleSidebar()" class="md:hidden text-slate-600 hover:text-slate-900 p-2 rounded-lg">
+            <i class="fa-solid fa-bars text-lg"></i>
+          </button>
+          <nav class="flex items-center text-sm font-medium text-slate-600" aria-label="Breadcrumb">
+            <span class="hover:text-slate-900 cursor-pointer" onclick="switchTab('dashboard')">Dashboard</span>
+            <span id="breadcrumb-separator" class="mx-2 text-slate-400">/</span>
+            <span id="breadcrumb-current" class="text-slate-900 font-semibold">Ringkasan Aktivitas</span>
+          </nav>
+        </div>
+
+        <!-- Right: Search, Help, Notification & User Profile -->
+        <div class="flex items-center gap-2 sm:gap-4">
+          <!-- Quick Search Bar -->
+          <div class="relative hidden lg:block w-72">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+            <input type="text" id="global-search" oninput="handleGlobalSearch(this.value)" placeholder="Cari tugas, dokumen, atau bantuan..." class="w-full bg-slate-50 hover:bg-slate-100/80 focus:bg-white text-xs pl-9 pr-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-ginsi-blue transition">
+          </div>
+
+          <!-- Bantuan / Help Button -->
+          <button onclick="openModal('modal-buat-permintaan')" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
+            <i class="fa-regular fa-circle-question text-slate-500"></i>
+            <span>Bantuan / Help</span>
+          </button>
+
+          <!-- Notification Bell -->
+          <button onclick="showToast('Notifikasi Sistem', 'Anda memiliki 1 tugas verifikasi NIB yang membutuhkan tindakan segera.')" class="relative p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition">
+            <i class="fa-regular fa-bell text-base"></i>
+            <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full"></span>
+          </button>
+
+          <!-- User Profile & Dropdown -->
+          <div class="relative">
+            <button type="button" onclick="toggleUserDropdown()" class="flex items-center gap-2.5 pl-2 sm:pl-3 border-l border-slate-200 focus:outline-none cursor-pointer">
+              <div id="user-avatar-initials" class="w-8 h-8 rounded-full bg-ginsi-blue text-white flex items-center justify-center font-bold text-xs ring-2 ring-blue-100">
+                BS
+              </div>
+              <div class="hidden sm:block text-left">
+                <span id="user-display-name" class="text-xs font-bold text-slate-800 block leading-tight">Budi Santoso</span>
+                <span id="user-display-role" class="text-[10px] text-slate-500 block leading-tight">Pemilik / Direktur</span>
+              </div>
+              <i onclick="toggleUserDropdown(); event.stopPropagation();" class="fa-solid fa-chevron-down text-[10px] text-slate-400 hidden sm:block cursor-pointer"></i>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div id="user-dropdown-menu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-30 fade-in">
+              <div class="px-4 py-2 border-b border-slate-100">
+                <p id="dropdown-user-email" class="text-xs font-bold text-slate-800 truncate">budi.s@globalniaga.co.id</p>
+                <span class="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-1">Sesi Aktif</span>
+              </div>
+              <button onclick="triggerProfilePhotoUpload(); toggleUserDropdown();" class="w-full text-left flex items-center gap-2.5 px-4 py-2 text-xs text-slate-700 hover:bg-slate-50">
+                <i class="fa-regular fa-image text-slate-400"></i> Edit Foto Profil
+              </button>
+              <input type="file" id="profile-photo-input" accept="image/*" class="hidden" onchange="handleProfilePhotoUpload(event)">
+              <a href="javascript:void(0)" onclick="switchTab('tasks'); toggleUserDropdown();" class="flex items-center gap-2.5 px-4 py-2 text-xs text-slate-700 hover:bg-slate-50">
+                <i class="fa-solid fa-list-check text-slate-400"></i> Tugas Saya
+              </a>
+              <a href="javascript:void(0)" onclick="switchTab('my-company'); toggleUserDropdown();" class="flex items-center gap-2.5 px-4 py-2 text-xs text-slate-700 hover:bg-slate-50">
+                <i class="fa-regular fa-building text-slate-400"></i> Profil Perusahaan
+              </a>
+              <a href="javascript:void(0)" onclick="switchTab('preferences'); toggleUserDropdown();" class="flex items-center gap-2.5 px-4 py-2 text-xs text-slate-700 hover:bg-slate-50">
+                <i class="fa-solid fa-sliders text-slate-400"></i> Pengaturan Akun
+              </a>
+              <div class="border-t border-slate-100 my-1"></div>
+              <button onclick="handleLogout()" class="w-full text-left flex items-center gap-2.5 px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 font-semibold">
+                <i class="fa-solid fa-power-off"></i> Keluar / Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- MAIN VIEWS CONTAINER -->
+      <main class="flex-1 p-4 sm:p-6 max-w-7xl w-full mx-auto">
+
+        <!-- ========================================== -->
+        <!-- VIEW 1: DASHBOARD                          -->
+        <!-- ========================================== -->
+        <section id="view-dashboard" class="space-y-6 fade-in">
+          <!-- Top Row: Welcome Card & Level Progress -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <!-- Welcome Card -->
+            <div class="lg:col-span-2 bg-white rounded-xl p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+              <div>
+                <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight" id="greeting-title">Selamat datang kembali, Budi</h1>
+                <p class="text-sm text-slate-500 mt-1">Berikut ringkasan aktivitas PT. Global Niaga Jaya hari ini.</p>
+              </div>
+
+              <!-- Quick Progress Banner inside Welcome -->
+              <div class="mt-6 pt-5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-blue-50 text-ginsi-blue flex items-center justify-center font-bold text-lg">
+                    <i class="fa-solid fa-shield-halved"></i>
+                  </div>
+                  <div>
+                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Status Profil Legalitas</span>
+                    <span class="text-sm font-bold text-slate-800">Level L2 (Target L3: Targeting Ready)</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-ginsi-blue bg-blue-50 px-2.5 py-1 rounded-md">70% Selesai</span>
+                  <button onclick="switchTab('my-company')" class="text-xs font-semibold text-slate-600 hover:text-ginsi-blue flex items-center gap-1">
+                    Detail <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Level Stepper Widget -->
+            <div class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tahapan Status Profil</span>
+                  <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">L2 Aktif</span>
+                </div>
+                <h3 class="text-base font-bold text-slate-800">Menuju Verifikasi Penuh L3</h3>
+                <p class="text-xs text-slate-500 mt-1">Selesaikan 1 perbaikan dokumen untuk membuka integrasi penuh ORCA & GINSI Fast-Track.</p>
+              </div>
+
+              <!-- Stepper Indicator -->
+              <div class="mt-4 pt-4 border-t border-slate-100">
+                <div class="flex items-center justify-between relative">
+                  <div class="absolute left-3 right-3 top-1/2 -translate-y-1/2 h-1 bg-slate-200 -z-0"></div>
+                  <div class="absolute left-3 w-1/2 top-1/2 -translate-y-1/2 h-1 bg-ginsi-blue -z-0"></div>
+
+                  <!-- Step 1 -->
+                  <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-7 h-7 rounded-full bg-ginsi-blue text-white flex items-center justify-center text-xs font-bold shadow">
+                      <i class="fa-solid fa-check text-[10px]"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-slate-700 mt-1">L1</span>
+                  </div>
+                  <!-- Step 2 -->
+                  <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-8 h-8 rounded-full bg-ginsi-blue text-white ring-4 ring-blue-100 flex items-center justify-center text-xs font-extrabold shadow">
+                      L2
+                    </div>
+                    <span class="text-[10px] font-bold text-ginsi-blue mt-1">Aktif</span>
+                  </div>
+                  <!-- Step 3 -->
+                  <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-7 h-7 rounded-full bg-white border-2 border-slate-300 text-slate-400 flex items-center justify-center text-xs font-bold">
+                      L3
+                    </div>
+                    <span class="text-[10px] font-medium text-slate-500 mt-1">Target</span>
+                  </div>
+                  <!-- Step 4 -->
+                  <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center text-xs font-bold">
+                      L4
+                    </div>
+                    <span class="text-[10px] font-medium text-slate-400 mt-1">L4</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Middle Row: Urgent Task Card & Status Pengajuan -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <!-- Urgent Task Card -->
+            <div class="lg:col-span-2 bg-gradient-to-r from-amber-500/10 via-amber-50/50 to-white rounded-xl p-6 border border-amber-300/60 shadow-sm relative overflow-hidden">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="bg-amber-500 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+                  <i class="fa-solid fa-triangle-exclamation text-[10px]"></i> Tugas Mendesak (1)
+                </span>
+                <span class="text-xs font-medium text-amber-800">Perlu Tindakan Anda</span>
+              </div>
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h3 class="text-base font-bold text-slate-900">Unggah Ulang Bukti NIB</h3>
+                  <p class="text-xs text-slate-600 mt-1">Catatan GINSI: Dokumen sebelumnya buram / tidak terbaca pada lembar nomor identitas.</p>
+                </div>
+                <button onclick="openUploadModal('NIB (Nomor Induk Berusaha)')" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg shadow transition flex items-center justify-center gap-2 whitespace-nowrap">
+                  <span>Selesaikan Sekarang</span>
+                  <i class="fa-solid fa-arrow-right text-[11px]"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Status Pengajuan Card -->
+            <div class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+              <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Status Pengajuan</h3>
+              <div class="space-y-3">
+                <div class="flex items-center justify-between py-2 border-b border-slate-100">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-800">Verifikasi Profil L2</h4>
+                    <span class="text-[11px] text-slate-500">Tinjauan Tim Verifikator</span>
+                  </div>
+                  <span class="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">Sedang Ditinjau</span>
+                </div>
+                <div class="flex items-center justify-between py-2">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-800">Akses Program Impor</h4>
+                    <span class="text-[11px] text-slate-500">Tahun 2026</span>
+                  </div>
+                  <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">Selesai</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Row: 4 Grid Akses Cepat / Ringkasan Profil -->
+          <div>
+            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Akses Cepat / Ringkasan Profil</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <!-- Card 1: Dokumen -->
+              <div onclick="switchTab('documents')" class="bg-white hover:border-ginsi-blue p-5 rounded-xl border border-slate-200 shadow-sm cursor-pointer transition hover:shadow-md group">
+                <div class="w-10 h-10 rounded-lg bg-blue-50 text-ginsi-blue flex items-center justify-center text-lg mb-3 group-hover:scale-105 transition">
+                  <i class="fa-regular fa-folder-closed"></i>
+                </div>
+                <h4 class="text-sm font-bold text-slate-800">Dokumen</h4>
+                <p class="text-xs text-slate-500 mt-1">4 dari 5 Terverifikasi</p>
+                <span class="inline-flex items-center gap-1 text-xs font-semibold text-ginsi-blue mt-3">Lihat Hub <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+              </div>
+
+              <!-- Card 2: Kontak & PIC -->
+              <div onclick="switchTab('contacts')" class="bg-white hover:border-ginsi-blue p-5 rounded-xl border border-slate-200 shadow-sm cursor-pointer transition hover:shadow-md group">
+                <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg mb-3 group-hover:scale-105 transition">
+                  <i class="fa-solid fa-user-group"></i>
+                </div>
+                <h4 class="text-sm font-bold text-slate-800">Kontak & PIC</h4>
+                <p class="text-xs text-slate-500 mt-1"><span id="dash-contact-summary">3</span> Orang Terdaftar</p>
+                <span class="inline-flex items-center gap-1 text-xs font-semibold text-ginsi-blue mt-3">Kelola PIC <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+              </div>
+
+              <!-- Card 3: Profil Impor -->
+              <div onclick="switchTab('programs')" class="bg-white hover:border-ginsi-blue p-5 rounded-xl border border-slate-200 shadow-sm cursor-pointer transition hover:shadow-md group">
+                <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg mb-3 group-hover:scale-105 transition">
+                  <i class="fa-solid fa-boxes-packing"></i>
+                </div>
+                <h4 class="text-sm font-bold text-slate-800">Profil Impor</h4>
+                <p class="text-xs text-slate-500 mt-1">Sudah Lengkap</p>
+                <span class="inline-flex items-center gap-1 text-xs font-semibold text-ginsi-blue mt-3">Kebutuhan & Program <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+              </div>
+
+              <!-- Card 4: Preferensi Data -->
+              <div onclick="switchTab('preferences')" class="bg-white hover:border-ginsi-blue p-5 rounded-xl border border-slate-200 shadow-sm cursor-pointer transition hover:shadow-md group">
+                <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-lg mb-3 group-hover:scale-105 transition">
+                  <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h4 class="text-sm font-bold text-slate-800">Preferensi Data</h4>
+                <p class="text-xs text-slate-500 mt-1">Aktif & Aman</p>
+                <span class="inline-flex items-center gap-1 text-xs font-semibold text-ginsi-blue mt-3">Atur Notifikasi <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 2: MY COMPANY                         -->
+        <!-- ========================================== -->
+        <section id="view-my-company" class="space-y-6 hidden fade-in">
+          <!-- Company Header with Actions -->
+          <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-3">
+                <h1 class="text-2xl font-extrabold text-slate-900">PT. Global Niaga Jaya</h1>
+                <span class="bg-blue-100 text-ginsi-blue text-xs font-bold px-2.5 py-0.5 rounded-full">Level L2</span>
+              </div>
+              <p class="text-sm text-slate-500 mt-1">Kelola informasi profil, keanggotaan, dasar sistem legalitas utama.</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <button onclick="showToast('Edit Profil', 'Formulir perubahan profil perusahaan telah dibuka.')" class="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50 transition flex items-center gap-2">
+                <i class="fa-regular fa-pen-to-square"></i> Edit Profil
+              </button>
+              <button onclick="downloadRingkasan()" class="px-4 py-2 text-xs font-semibold rounded-lg bg-ginsi-blue hover:bg-ginsi-darkblue text-white transition flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-download"></i> Unduh Ringkasan
+              </button>
+            </div>
+          </div>
+
+          <!-- Membership Status & Stepper Banner -->
+          <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+              <div>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Status Keanggotaan & Verifikasi</span>
+                <h3 class="text-base font-bold text-slate-800 mt-0.5">Level L2 (Verification Ready)</h3>
+              </div>
+              <div class="flex items-center gap-2 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg text-xs text-ginsi-darkblue">
+                <i class="fa-solid fa-circle-info text-ginsi-blue"></i>
+                <span>Lengkapi data <strong>L3</strong> untuk membuka <strong>Akses GINSI & ORCA CRM</strong></span>
+              </div>
+            </div>
+
+            <!-- Stepper Progress Bar -->
+            <div class="pt-6">
+              <div class="max-w-2xl mx-auto">
+                <div class="flex items-center justify-between relative">
+                  <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-1 bg-slate-200 -z-0"></div>
+                  <div class="absolute left-6 w-[45%] top-1/2 -translate-y-1/2 h-1 bg-ginsi-blue -z-0"></div>
+
+                  <!-- L1 -->
+                  <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-8 h-8 rounded-full bg-ginsi-blue text-white flex items-center justify-center text-xs font-bold shadow">
+                      <i class="fa-solid fa-check"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-700 mt-1.5">L1</span>
+                    <span class="text-[10px] text-slate-400">Dasar</span>
+                  </div>
+                  <!-- L2 (Aktif) -->
+                  <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-9 h-9 rounded-full bg-ginsi-blue text-white ring-4 ring-blue-100 flex items-center justify-center text-xs font-extrabold shadow">
+                      L2
+                    </div>
+                    <span class="text-xs font-bold text-ginsi-blue mt-1.5">L2 (Aktif)</span>
+                    <span class="text-[10px] text-ginsi-blue font-medium">Dalam Review</span>
+                  </div>
+                  <!-- L3 -->
+                  <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-8 h-8 rounded-full bg-white border-2 border-slate-300 text-slate-500 flex items-center justify-center text-xs font-bold">
+                      L3
+                    </div>
+                    <span class="text-xs font-semibold text-slate-600 mt-1.5">L3</span>
+                    <span class="text-[10px] text-slate-400">Target</span>
+                  </div>
+                  <!-- L4 -->
+                  <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center text-xs font-bold">
+                      L4
+                    </div>
+                    <span class="text-xs font-medium text-slate-400 mt-1.5">L4</span>
+                    <span class="text-[10px] text-slate-400">Prioritas</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Banner CTA perbaikan -->
+              <div class="mt-8 bg-amber-50 border border-amber-200 rounded-lg p-3 text-center flex items-center justify-center gap-2 text-xs text-amber-800">
+                <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+                <span>Ingin lanjut ke <strong>Level L3</strong>? Selesaikan 1 tugas perbaikan dokumen Anda.</span>
+                <button onclick="switchTab('tasks')" class="ml-2 font-bold underline hover:text-amber-950">Buka Tugas</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 Columns Detail Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <!-- Col 1: Informasi Utama (Identitas) -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                  <i class="fa-regular fa-id-card text-ginsi-blue"></i> Informasi Utama (Identitas)
+                </h3>
+              </div>
+              <div class="space-y-3 text-xs">
+                <div>
+                  <span class="text-slate-400 block font-medium">NIB (Nomor Induk Berusaha)</span>
+                  <div class="flex items-center justify-between mt-0.5">
+                    <span class="font-bold text-slate-800">0123456789</span>
+                    <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Terverifikasi</span>
+                  </div>
+                </div>
+                <div>
+                  <span class="text-slate-400 block font-medium">NPWP Perusahaan</span>
+                  <div class="flex items-center justify-between mt-0.5">
+                    <span class="font-bold text-slate-800">12.345.678.9-021.000</span>
+                    <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Terverifikasi</span>
+                  </div>
+                </div>
+                <div>
+                  <span class="text-slate-400 block font-medium">Alamat Domisili</span>
+                  <span class="font-medium text-slate-700 mt-0.5 block leading-relaxed">Jl. Gatot Subroto No. 123, Jakarta Selatan, DKI Jakarta</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block font-medium">Telepon Perusahaan</span>
+                  <span class="font-semibold text-slate-800 mt-0.5 block">+62 21-5555-1234</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block font-medium">Email Korespondensi</span>
+                  <span class="font-semibold text-slate-800 mt-0.5 block" id="company-registered-email">info@globalniaga.co.id</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Col 2: Keanggotaan GINSI -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                  <i class="fa-solid fa-award text-ginsi-blue"></i> Keanggotaan GINSI
+                </h3>
+              </div>
+              <div class="space-y-3 text-xs">
+                <div>
+                  <span class="text-slate-400 block font-medium">No. Anggota</span>
+                  <span class="font-bold text-slate-800 mt-0.5 block">GINSI-ID-2024-0124</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block font-medium">Wilayah BPD</span>
+                  <span class="font-semibold text-slate-800 mt-0.5 block">DKI Jakarta</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block font-medium">Status Keaktifan</span>
+                  <span class="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded inline-block mt-0.5">Aktif / Dalam Review GINSI</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block font-medium">Masa Berlaku</span>
+                  <span class="font-semibold text-slate-800 mt-0.5 block">12 Desember 2026</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Col 3: Status Dokumen Legalitas -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                  <i class="fa-regular fa-file-lines text-ginsi-blue"></i> Status Dokumen Legalitas
+                </h3>
+              </div>
+              <div class="space-y-2.5 text-xs">
+                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50">
+                  <span class="font-medium text-slate-700">NIB (Nomor Induk Berusaha)</span>
+                  <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Terverifikasi</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50">
+                  <span class="font-medium text-slate-700">NPWP Perusahaan</span>
+                  <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Terverifikasi</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg bg-rose-50 border border-rose-200">
+                  <span class="font-semibold text-rose-900">Akta Pendirian</span>
+                  <span class="text-[10px] font-bold text-rose-700 bg-rose-100 px-2 py-0.5 rounded">Butuh Perbaikan</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50">
+                  <span class="font-medium text-slate-700">Surat Izin Impor (API-U)</span>
+                  <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Terverifikasi</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 3: KONTAK & PIC                       -->
+        <!-- ========================================== -->
+        <section id="view-contacts" class="space-y-6 hidden fade-in">
+          <!-- Header and action buttons -->
+          <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h1 class="text-2xl font-extrabold text-slate-900">Kontak & PIC</h1>
+              <p class="text-sm text-slate-500 mt-1">Kelola daftar Person In Charge (PIC) dan tingkat akses portal PT. Global Niaga Jaya.</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <button onclick="openModal('modal-tambah-kontak')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-ginsi-blue hover:bg-ginsi-darkblue text-white transition flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-plus"></i> Tambah Kontak
+              </button>
+              <button onclick="showToast('Pengaturan Peran', 'Modul konfigurasi hak akses PIC dibuka.')" class="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50 transition flex items-center gap-2">
+                <i class="fa-solid fa-user-shield"></i> Pengaturan Peran
+              </button>
+            </div>
+          </div>
+
+          <!-- Counters and Filter Bar -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <!-- Counters -->
+            <div class="flex items-center gap-2 sm:gap-4 flex-wrap text-xs">
+              <span class="font-bold text-slate-700 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">
+                Total Kontak: <strong class="text-ginsi-blue" id="contact-count-total">3</strong>
+              </span>
+              <span class="font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200">
+                Terverifikasi: <strong id="contact-count-verified">2</strong>
+              </span>
+              <span class="font-bold text-amber-700 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200">
+                Perl. Perhatian: <strong id="contact-count-warning">1</strong>
+              </span>
+            </div>
+
+            <!-- Search & Filters -->
+            <div class="flex items-center gap-2">
+              <div class="relative w-48 sm:w-60">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" id="contact-search-input" oninput="filterContacts()" placeholder="Cari nama, email..." class="w-full bg-white text-xs pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-ginsi-blue">
+              </div>
+              <div class="flex rounded-lg border border-slate-200 bg-white p-0.5 text-xs">
+                <button onclick="setContactFilter('semua')" id="btn-pic-semua" class="px-2.5 py-1 rounded font-semibold bg-ginsi-blue text-white transition">Semua</button>
+                <button onclick="setContactFilter('aktif')" id="btn-pic-aktif" class="px-2.5 py-1 rounded font-semibold text-slate-600 hover:bg-slate-100 transition">Aktif</button>
+                <button onclick="setContactFilter('verifikasi')" id="btn-pic-verifikasi" class="px-2.5 py-1 rounded font-semibold text-slate-600 hover:bg-slate-100 transition">Perlu Verifikasi</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Table -->
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
+                    <th class="py-3 px-4">Kontak</th>
+                    <th class="py-3 px-4">Peran Akses</th>
+                    <th class="py-3 px-4">Status</th>
+                    <th class="py-3 px-4 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="contact-table-body" class="divide-y divide-slate-100">
+                  <!-- Row 1: Active User Contact -->
+                  <tr class="hover:bg-slate-50/70 transition contact-row" data-name="Budi Santoso" data-status="aktif">
+                    <td class="py-3.5 px-4">
+                      <div class="flex items-center gap-3">
+                        <div id="contact-row1-initials" class="w-9 h-9 rounded-full bg-blue-100 text-ginsi-blue font-bold flex items-center justify-center text-xs">BS</div>
+                        <div>
+                          <div class="font-bold text-slate-800 text-sm">
+                            <span id="contact-row1-name">Budi Santoso</span> 
+                            <span class="text-xs font-normal text-slate-500" id="contact-row1-role">(Pemilik / Direktur)</span>
+                          </div>
+                          <div class="text-slate-500 flex items-center gap-3 mt-0.5 text-[11px]">
+                            <span><i class="fa-regular fa-envelope mr-1 text-slate-400"></i><span id="contact-row1-email">budi.s@globalniaga.co.id</span></span>
+                            <span><i class="fa-solid fa-phone mr-1 text-slate-400"></i>+62 812-3456-7890</span>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="py-3.5 px-4">
+                      <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md font-semibold text-[11px]">Akses Utama</span>
+                    </td>
+                    <td class="py-3.5 px-4">
+                      <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-md font-bold text-[11px]">Terverifikasi</span>
+                    </td>
+                    <td class="py-3.5 px-4 text-right">
+                      <button onclick="editContact('Budi Santoso')" class="text-slate-400 hover:text-ginsi-blue p-1.5 rounded hover:bg-slate-100">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- Row 2: Siti Aminah -->
+                  <tr class="hover:bg-slate-50/70 transition contact-row" data-name="Siti Aminah" data-status="aktif">
+                    <td class="py-3.5 px-4">
+                      <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center text-xs">SA</div>
+                        <div>
+                          <div class="font-bold text-slate-800 text-sm">Siti Aminah <span class="text-xs font-normal text-slate-500">(PIC Operasional)</span></div>
+                          <div class="text-slate-500 flex items-center gap-3 mt-0.5 text-[11px]">
+                            <span><i class="fa-regular fa-envelope mr-1 text-slate-400"></i>siti.a@globalniaga.co.id</span>
+                            <span><i class="fa-solid fa-phone mr-1 text-slate-400"></i>+62 818-7890-1234</span>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="py-3.5 px-4">
+                      <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md font-semibold text-[11px]">Akses Staf</span>
+                    </td>
+                    <td class="py-3.5 px-4">
+                      <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-md font-bold text-[11px]">Terverifikasi</span>
+                    </td>
+                    <td class="py-3.5 px-4 text-right">
+                      <button onclick="editContact('Siti Aminah')" class="text-slate-400 hover:text-ginsi-blue p-1.5 rounded hover:bg-slate-100">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- Row 3: Hendra Wijaya -->
+                  <tr class="hover:bg-slate-50/70 transition contact-row" data-name="Hendra Wijaya" data-status="verifikasi">
+                    <td class="py-3.5 px-4">
+                      <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full bg-amber-100 text-amber-700 font-bold flex items-center justify-center text-xs">HW</div>
+                        <div>
+                          <div class="font-bold text-slate-800 text-sm">Hendra Wijaya <span class="text-xs font-normal text-slate-500">(PIC Keuangan)</span></div>
+                          <div class="text-slate-500 flex items-center gap-3 mt-0.5 text-[11px]">
+                            <span><i class="fa-regular fa-envelope mr-1 text-slate-400"></i>hendra.w@globalniaga.co.id</span>
+                            <span><i class="fa-solid fa-phone mr-1 text-slate-400"></i>+62 813-0123-2344</span>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="py-3.5 px-4">
+                      <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md font-semibold text-[11px]">Akses Staf</span>
+                    </td>
+                    <td class="py-3.5 px-4">
+                      <div class="flex items-center gap-2">
+                        <span class="bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-md font-bold text-[11px]">Butuh Verifikasi</span>
+                        <button onclick="showToast('Kirim Ulang Verifikasi', 'Tautan verifikasi OTP dikirimkan ke WhatsApp Hendra Wijaya.')" class="text-xs font-semibold text-ginsi-blue hover:underline">
+                          Kirim Ulang
+                        </button>
+                      </div>
+                    </td>
+                    <td class="py-3.5 px-4 text-right">
+                      <button onclick="editContact('Hendra Wijaya')" class="text-slate-400 hover:text-ginsi-blue p-1.5 rounded hover:bg-slate-100">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 4: TUGAS SAYA (MY TASKS)              -->
+        <!-- ========================================== -->
+        <section id="view-tasks" class="space-y-6 hidden fade-in">
+          <!-- Tasks Header -->
+          <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+            <h1 class="text-2xl font-extrabold text-slate-900">Tugas Saya (My Tasks)</h1>
+            <p class="text-sm text-slate-500 mt-1">Selesaikan beberapa tugas di bawah ini agar profil perusahaan divalidasi ke tingkat berikutnya (L3: Targeting Ready).</p>
+          </div>
+
+          <!-- Task Filter Tabs & Search -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <!-- Filter Tabs -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+              <button onclick="setTaskCategory('all')" id="btn-task-all" class="px-3.5 py-2 rounded-lg font-bold bg-ginsi-blue text-white shadow-sm whitespace-nowrap">
+                Total Tugas (4)
+              </button>
+              <button onclick="setTaskCategory('butuh-perhatian')" id="btn-task-butuh-perhatian" class="px-3.5 py-2 rounded-lg font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 whitespace-nowrap">
+                Butuh Perhatian (2)
+              </button>
+              <button onclick="setTaskCategory('sedang-ditinjau')" id="btn-task-sedang-ditinjau" class="px-3.5 py-2 rounded-lg font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 whitespace-nowrap">
+                Sedang Ditinjau (1)
+              </button>
+              <button onclick="setTaskCategory('belum-mulai')" id="btn-task-belum-mulai" class="px-3.5 py-2 rounded-lg font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 whitespace-nowrap">
+                Belum Mulai (1)
+              </button>
+            </div>
+
+            <!-- Priority Dropdown -->
+            <div class="flex items-center gap-2">
+              <select id="task-priority-filter" onchange="filterTasks()" class="text-xs bg-white border border-slate-200 rounded-lg px-3 py-2 font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-ginsi-blue">
+                <option value="all">Semua Prioritas</option>
+                <option value="tinggi">Prioritas Tinggi</option>
+                <option value="sedang">Prioritas Sedang</option>
+                <option value="normal">Prioritas Normal</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Task Cards List -->
+          <div class="space-y-3.5" id="task-list-container">
+            <!-- Task Card 1 -->
+            <div class="task-card bg-white rounded-xl p-5 border border-slate-200 hover:border-slate-300 shadow-sm transition" data-category="butuh-perhatian" data-priority="tinggi">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h3 class="text-sm font-bold text-slate-900">Unggah Ulang Bukti NIB x Legalitas Perusahaan</h3>
+                    <span class="text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded">Butuh Perbaikan</span>
+                    <span class="text-[10px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full">Prioritas Tinggi</span>
+                  </div>
+                  <p class="text-xs text-slate-600">Catatan GINSI: Dokumen terlihat buram pada halaman nomor identitas.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button onclick="openUploadModal('NIB (Nomor Induk Berusaha)')" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition shadow-sm whitespace-nowrap">
+                    Selesaikan Sekarang
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Task Card 2 -->
+            <div class="task-card bg-white rounded-xl p-5 border border-slate-200 hover:border-slate-300 shadow-sm transition" data-category="sedang-ditinjau" data-priority="sedang">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h3 class="text-sm font-bold text-slate-900">Lengkapi Profil Kebutuhan Impor</h3>
+                    <span class="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">Sedang Ditinjau</span>
+                    <span class="text-[10px] font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">Prioritas Sedang</span>
+                  </div>
+                  <p class="text-xs text-slate-600">Masukkan volume impor berkala untuk rekomendasi program ORCA.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button onclick="switchTab('programs')" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-semibold px-4 py-2 rounded-lg transition shadow-sm whitespace-nowrap">
+                    Lihatkan Progres
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Task Card 3 -->
+            <div class="task-card bg-white rounded-xl p-5 border border-slate-200 hover:border-slate-300 shadow-sm transition" data-category="butuh-perhatian" data-priority="tinggi">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h3 class="text-sm font-bold text-slate-900">Verifikasi Kontak PIC Utama</h3>
+                    <span class="text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded">Butuh Perbaikan</span>
+                    <span class="text-[10px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full">Prioritas Tinggi</span>
+                  </div>
+                  <p class="text-xs text-slate-600">Konfirmasikan nomor HP & email untuk penyelesaian data.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button onclick="switchTab('preferences')" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-semibold px-4 py-2 rounded-lg transition shadow-sm whitespace-nowrap">
+                    Validasi Akun
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Task Card 4 -->
+            <div class="task-card bg-white rounded-xl p-5 border border-slate-200 hover:border-slate-300 shadow-sm transition" data-category="belum-mulai" data-priority="normal">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h3 class="text-sm font-bold text-slate-900">Perbarui Dokumen AMDAL / Lingkungan Hidup</h3>
+                    <span class="text-[10px] font-bold text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">Belum Mulai</span>
+                    <span class="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Prioritas Normal</span>
+                  </div>
+                  <p class="text-xs text-slate-600">Dokumen telah kedaluwarsa, silakan perbarui berkas resmi teranyar.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button onclick="openUploadModal('Dokumen AMDAL / Lingkungan Hidup')" class="bg-ginsi-blue hover:bg-ginsi-darkblue text-white text-xs font-semibold px-4 py-2 rounded-lg transition shadow-sm whitespace-nowrap">
+                    Unggah Berkas
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 5: PERMINTAAN SAYA (MY REQUESTS)      -->
+        <!-- ========================================== -->
+        <section id="view-requests" class="space-y-6 hidden fade-in">
+          <!-- Requests Header -->
+          <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h1 class="text-2xl font-extrabold text-slate-900">Permintaan Saya (My Requests)</h1>
+              <p class="text-sm text-slate-500 mt-1">Pantau status pengajuan, verifikasi, atau permohonan akselerasi GINSI & ORCA.</p>
+            </div>
+            <div>
+              <button onclick="openModal('modal-buat-permintaan')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-ginsi-blue hover:bg-ginsi-darkblue text-white transition flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-plus"></i> Buat Permintaan
+              </button>
+            </div>
+          </div>
+
+          <!-- Filters & Status Tabs -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <!-- Tabs -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+              <button onclick="setRequestCategory('all')" id="btn-req-all" class="px-3.5 py-2 rounded-lg font-bold bg-ginsi-blue text-white shadow-sm whitespace-nowrap">
+                Semua Permintaan (4)
+              </button>
+              <button onclick="setRequestCategory('butuh-perbaikan')" id="btn-req-butuh-perbaikan" class="px-3.5 py-2 rounded-lg font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 whitespace-nowrap">
+                Butuh Perbaikan (1)
+              </button>
+              <button onclick="setRequestCategory('sedang-diproses')" id="btn-req-sedang-diproses" class="px-3.5 py-2 rounded-lg font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 whitespace-nowrap">
+                Sedang Diproses (1)
+              </button>
+              <button onclick="setRequestCategory('selesai')" id="btn-req-selesai" class="px-3.5 py-2 rounded-lg font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 whitespace-nowrap">
+                Selesai (2)
+              </button>
+            </div>
+
+            <!-- Dropdown Filters -->
+            <div class="flex items-center gap-2">
+              <select id="req-type-filter" onchange="filterRequests()" class="text-xs bg-white border border-slate-200 rounded-lg px-3 py-2 font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-ginsi-blue">
+                <option value="all">Semua Tipe</option>
+                <option value="verifikasi">Verifikasi & Legalitas</option>
+                <option value="akselerasi">Program Akselerasi</option>
+                <option value="konsultasi">Konsultasi HS Code</option>
+                <option value="akses">Akses & PIC</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Request Ticket List -->
+          <div class="space-y-3.5" id="request-list-container">
+            <!-- REQ 1 -->
+            <div class="request-item bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-slate-300 transition" data-status="butuh-perbaikan" data-type="verifikasi">
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <h3 class="text-sm font-bold text-slate-900">Permintaan Verifikasi & Legalitas (Level L2)</h3>
+                  <div class="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                    <span class="font-mono font-semibold text-slate-700">REQ-0042</span>
+                    <span>•</span>
+                    <span>Diajukan ke: <strong>Tim Verifikasi</strong></span>
+                    <span>•</span>
+                    <span>08 Des 2026</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="bg-rose-50 text-rose-700 border border-rose-200 px-3 py-1 rounded-md text-xs font-bold">
+                    Butuh Perbaikan
+                  </span>
+                  <button onclick="openUploadModal('Revisi Akta Pendirian')" class="bg-ginsi-blue hover:bg-ginsi-darkblue text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg transition shadow-sm">
+                    Perbaiki Berkas
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- REQ 2 -->
+            <div class="request-item bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-slate-300 transition" data-status="sedang-diproses" data-type="akselerasi">
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <h3 class="text-sm font-bold text-slate-900">Akselerasi Program Impor GINSI-ORCA</h3>
+                  <div class="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                    <span class="font-mono font-semibold text-slate-700">REQ-0038</span>
+                    <span>•</span>
+                    <span>Diajukan ke: <strong>Ops GINSI</strong></span>
+                    <span>•</span>
+                    <span>05 Des 2026</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded-md text-xs font-bold">
+                    Sedang Diproses
+                  </span>
+                  <button onclick="showToast('Detail Permintaan', 'Tiket REQ-0038: Dalam tahap penelaahan kuota impor ORCA.')" class="text-xs text-slate-600 hover:text-ginsi-blue font-semibold">
+                    Lihat Detail
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- REQ 3 -->
+            <div class="request-item bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-slate-300 transition" data-status="selesai" data-type="konsultasi">
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <h3 class="text-sm font-bold text-slate-900">Konsultasi Regulasi Impor HS Code</h3>
+                  <div class="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                    <span class="font-mono font-semibold text-slate-700">REQ-0024</span>
+                    <span>•</span>
+                    <span>Diajukan ke: <strong>Tim Advokasi</strong></span>
+                    <span>•</span>
+                    <span>28 Nov 2026</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-md text-xs font-bold">
+                    Selesai
+                  </span>
+                  <button onclick="showToast('Detail Permintaan', 'Tiket REQ-0024: Klasifikasi HS Code disetujui.')" class="text-xs text-slate-600 hover:text-ginsi-blue font-semibold">
+                    Lihat Detail
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- REQ 4 -->
+            <div class="request-item bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-slate-300 transition" data-status="selesai" data-type="akses">
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <h3 class="text-sm font-bold text-slate-900">Pembaruan Akses & Kontak PIC Utama</h3>
+                  <div class="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                    <span class="font-mono font-semibold text-slate-700">REQ-0016</span>
+                    <span>•</span>
+                    <span>Diajukan ke: <strong>Admin Portal</strong></span>
+                    <span>•</span>
+                    <span>20 Okt 2026</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-md text-xs font-bold">
+                    Selesai
+                  </span>
+                  <button onclick="showToast('Detail Permintaan', 'Tiket REQ-0016: Akses PIC Utama telah tersinkronisasi.')" class="text-xs text-slate-600 hover:text-ginsi-blue font-semibold">
+                    Lihat Detail
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 6: KEBUTUHAN & PROGRAM                -->
+        <!-- ========================================== -->
+        <section id="view-programs" class="space-y-6 hidden fade-in">
+          <!-- Header -->
+          <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h1 class="text-2xl font-extrabold text-slate-900">Kebutuhan & Program (Needs & Programs)</h1>
+              <p class="text-sm text-slate-500 mt-1">Sesuaikan kebutuhan spesifik Anda dan ikuti program akselerasi GINSI & ORCA.</p>
+            </div>
+            <div>
+              <button onclick="openModal('modal-buat-permintaan')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-ginsi-blue hover:bg-ginsi-darkblue text-white transition flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-plus"></i> Tambah Kebutuhan
+              </button>
+            </div>
+          </div>
+
+          <!-- 2 Columns Grid: Kebutuhan Impor Saya & Program GINSI -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- LEFT COL: Kebutuhan Impor Saya -->
+            <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                  <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-cart-flatbed text-ginsi-blue"></i> Kebutuhan Impor Saya (3 Aktif)
+                  </h3>
+                </div>
+                <div class="space-y-4">
+                  <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <h4 class="text-sm font-bold text-slate-800">Konsultasi Regulasi & Hambatan</h4>
+                        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Aktif</span>
+                      </div>
+                      <p class="text-xs text-slate-500 mt-1">Izin NIB / Klasifikasi HS Code</p>
+                    </div>
+                    <button onclick="showToast('Hubungi GINSI', 'Membuka kanal konsultasi dengan tim advokasi GINSI.')" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 transition whitespace-nowrap">
+                      Hubungi GINSI
+                    </button>
+                  </div>
+
+                  <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <h4 class="text-sm font-bold text-slate-800">Fasilitas Kemitraan (Warehousing)</h4>
+                        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Aktif</span>
+                      </div>
+                      <p class="text-xs text-slate-500 mt-1">Kemitraan & akses gudang logistik kepabeanan</p>
+                    </div>
+                    <button onclick="showToast('Opsi Gudang', 'Menampilkan mitra logistik & pergudangan terverifikasi.')" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 transition whitespace-nowrap">
+                      Lihat Opsi
+                    </button>
+                  </div>
+
+                  <div class="p-4 rounded-xl border border-amber-200 bg-amber-50/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <h4 class="text-sm font-bold text-slate-800">Bantuan Biaya Logistik</h4>
+                        <span class="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">Butuh Tindakan</span>
+                      </div>
+                      <p class="text-xs text-slate-500 mt-1">Pending Data Validasi</p>
+                    </div>
+                    <button onclick="openUploadModal('Data Validasi Biaya Logistik')" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-600 hover:bg-amber-700 text-white transition whitespace-nowrap">
+                      Lengkapi Data
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT COL: Program GINSI & ORCA -->
+            <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                  <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-rocket text-ginsi-blue"></i> Program GINSI & ORCA (3 Program)
+                  </h3>
+                </div>
+                <div class="space-y-4">
+                  <div class="p-4 rounded-xl border border-blue-200 bg-blue-50/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <h4 class="text-sm font-bold text-slate-800">Program Jalur Cepat (Fast-Track)</h4>
+                        <span class="text-[10px] font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Sedang Berjalan (75%)</span>
+                      </div>
+                      <p class="text-xs text-slate-500 mt-1">Akselerasi ke L3/L4 & sinkronisasi ORCA CRM</p>
+                    </div>
+                    <button onclick="showToast('Progres Program', 'Progres verifikasi Anda mencapai 75%. Tersisa 1 tinjauan berkas.')" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 transition whitespace-nowrap">
+                      Lihat Progres
+                    </button>
+                  </div>
+
+                  <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <h4 class="text-sm font-bold text-slate-800">Sosialisasi & Regulasi Impor GINSI 2026</h4>
+                        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Siap Mendaftar</span>
+                      </div>
+                      <p class="text-xs text-slate-500 mt-1">Edukasi & kepatuhan impor regulasi baru</p>
+                    </div>
+                    <button onclick="showToast('Pendaftaran Berhasil', 'Pendaftaran sesi sosialisasi GINSI 2026 tercatat.')" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-ginsi-blue hover:bg-ginsi-darkblue text-white transition whitespace-nowrap">
+                      Ikuti Acara
+                    </button>
+                  </div>
+
+                  <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <h4 class="text-sm font-bold text-slate-800">Program Insentif Bea Masuk</h4>
+                        <span class="text-[10px] font-bold text-slate-600 bg-slate-200 px-2 py-0.5 rounded">Tersedia</span>
+                      </div>
+                      <p class="text-xs text-slate-500 mt-1">Akses fasilitas khusus Importir Produsen</p>
+                    </div>
+                    <button onclick="showToast('Daftar Program', 'Pengajuan keikutsertaan program insentif telah diajukan.')" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 transition whitespace-nowrap">
+                      Daftar Program
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 7: PUSAT DOKUMEN (DOCUMENT HUB)       -->
+        <!-- ========================================== -->
+        <section id="view-documents" class="space-y-6 hidden fade-in">
+          <!-- Documents Header -->
+          <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h1 class="text-2xl font-extrabold text-slate-900">Pusat Dokumen (Document Hub)</h1>
+              <p class="text-sm text-slate-500 mt-1">Kelola, unggah, dan pantau status dokumen legalitas perusahaan Anda.</p>
+            </div>
+            <div>
+              <button onclick="openUploadModal('Dokumen Baru')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-ginsi-blue hover:bg-ginsi-darkblue text-white transition flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Unggah Dokumen Baru
+              </button>
+            </div>
+          </div>
+
+          <!-- Document Status Counters -->
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center text-xs">
+            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+              <span class="text-slate-400 block font-medium">Total Dokumen</span>
+              <span class="text-base font-extrabold text-slate-800 mt-0.5 block">6</span>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-emerald-200 shadow-sm">
+              <span class="text-emerald-600 block font-medium">Terverifikasi</span>
+              <span class="text-base font-extrabold text-emerald-700 mt-0.5 block">4</span>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-rose-200 shadow-sm">
+              <span class="text-rose-600 block font-medium">Butuh Perbaikan</span>
+              <span class="text-base font-extrabold text-rose-700 mt-0.5 block">1</span>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-amber-200 shadow-sm">
+              <span class="text-amber-600 block font-medium">Dalam Proses</span>
+              <span class="text-base font-extrabold text-amber-700 mt-0.5 block">1</span>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm col-span-2 sm:col-span-1">
+              <span class="text-slate-400 block font-medium">Belum Diunggah</span>
+              <span class="text-base font-extrabold text-slate-500 mt-0.5 block">0</span>
+            </div>
+          </div>
+
+          <!-- Kelayakan L3 Progress Indicator -->
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+              <span class="text-xs font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-circle-check text-ginsi-blue"></i> Kelayakan L3 (Targeting Ready)
+              </span>
+              <span class="text-xs font-bold text-ginsi-blue">4 dari 5 Dokumen Wajib Terverifikasi</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+              <div class="bg-ginsi-blue h-2.5 rounded-full" style="width: 80%"></div>
+            </div>
+          </div>
+
+          <!-- Document Table -->
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
+                    <th class="py-3 px-4">Nama Dokumen</th>
+                    <th class="py-3 px-4">Status</th>
+                    <th class="py-3 px-4">File Terlampir</th>
+                    <th class="py-3 px-4 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  <tr class="hover:bg-slate-50/70 transition">
+                    <td class="py-3.5 px-4 font-semibold text-slate-800">NIB (Nomor Induk Berusaha)</td>
+                    <td class="py-3.5 px-4">
+                      <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-md font-bold text-[11px]">Terverifikasi</span>
+                    </td>
+                    <td class="py-3.5 px-4 text-slate-600 font-mono text-[11px]">NIB_GlobalNiaga.pdf</td>
+                    <td class="py-3.5 px-4 text-right">
+                      <button onclick="downloadMockDoc('NIB_GlobalNiaga.pdf')" class="text-xs font-semibold text-ginsi-blue hover:underline">
+                        <i class="fa-regular fa-file-pdf mr-1"></i> Lihat / Download
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr class="hover:bg-slate-50/70 transition">
+                    <td class="py-3.5 px-4 font-semibold text-slate-800">NPWP Perusahaan</td>
+                    <td class="py-3.5 px-4">
+                      <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-md font-bold text-[11px]">Terverifikasi</span>
+                    </td>
+                    <td class="py-3.5 px-4 text-slate-600 font-mono text-[11px]">NPWP_GlobalNiaga.pdf</td>
+                    <td class="py-3.5 px-4 text-right">
+                      <button onclick="downloadMockDoc('NPWP_GlobalNiaga.pdf')" class="text-xs font-semibold text-ginsi-blue hover:underline">
+                        <i class="fa-regular fa-file-pdf mr-1"></i> Lihat / Download
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr class="hover:bg-rose-50/30 transition bg-rose-50/10">
+                    <td class="py-3.5 px-4">
+                      <div class="font-semibold text-slate-800">Akta Pendirian & Pengesahan Kemenkumham</div>
+                      <div class="text-[11px] text-rose-600 mt-0.5">Catatan GINSI: Lampiran halaman 3 belum terverifikasi / buram.</div>
+                    </td>
+                    <td class="py-3.5 px-4">
+                      <span class="bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-md font-bold text-[11px]">Butuh Perbaikan</span>
+                    </td>
+                    <td class="py-3.5 px-4 text-slate-600 font-mono text-[11px]">Akta_Pendirian_Revisi.pdf</td>
+                    <td class="py-3.5 px-4 text-right">
+                      <button onclick="openUploadModal('Akta Pendirian & Pengesahan')" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm">
+                        Unggah Ulang
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr class="hover:bg-slate-50/70 transition">
+                    <td class="py-3.5 px-4 font-semibold text-slate-800">Surat Izin Impor (API-U)</td>
+                    <td class="py-3.5 px-4">
+                      <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-md font-bold text-[11px]">Terverifikasi</span>
+                    </td>
+                    <td class="py-3.5 px-4 text-slate-600 font-mono text-[11px]">APIU_GlobalNiaga.pdf</td>
+                    <td class="py-3.5 px-4 text-right">
+                      <button onclick="downloadMockDoc('APIU_GlobalNiaga.pdf')" class="text-xs font-semibold text-ginsi-blue hover:underline">
+                        Lihat Detail
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr class="hover:bg-slate-50/70 transition">
+                    <td class="py-3.5 px-4 font-semibold text-slate-800">Surat Pernyataan Mandiri</td>
+                    <td class="py-3.5 px-4">
+                      <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-md font-bold text-[11px]">Terverifikasi</span>
+                    </td>
+                    <td class="py-3.5 px-4 text-slate-600 font-mono text-[11px]">Mandiri_GlobalNiaga.pdf</td>
+                    <td class="py-3.5 px-4 text-right">
+                      <button onclick="downloadMockDoc('Mandiri_GlobalNiaga.pdf')" class="text-xs font-semibold text-ginsi-blue hover:underline">
+                        <i class="fa-regular fa-file-pdf mr-1"></i> Lihat / Download
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr class="hover:bg-slate-50/70 transition">
+                    <td class="py-3.5 px-4 font-semibold text-slate-800">Laporan Keuangan Terakhir</td>
+                    <td class="py-3.5 px-4">
+                      <span class="bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-md font-bold text-[11px]">Dalam Proses</span>
+                    </td>
+                    <td class="py-3.5 px-4 text-slate-400 font-mono text-[11px]">-</td>
+                    <td class="py-3.5 px-4 text-right">
+                      <button onclick="openUploadModal('Laporan Keuangan Terakhir')" class="bg-ginsi-blue hover:bg-ginsi-darkblue text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm">
+                        Unggah File
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 8: PUSAT PREFERENSI (PREFERENCE)      -->
+        <!-- ========================================== -->
+        <section id="view-preferences" class="space-y-6 hidden fade-in">
+          <!-- Preference Header -->
+          <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+            <h1 class="text-2xl font-extrabold text-slate-900">Pusat Preferensi (Preference Center)</h1>
+            <p class="text-sm text-slate-500 mt-1">Atur bagaimana kami menghubungi perusahaan Anda dan pilih jenis informasi yang ingin Anda terima.</p>
+          </div>
+
+          <!-- Preference Settings Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- LEFT COL: Kontak & Tujuan Komunikasi -->
+            <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-6">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Kontak & Tujuan Komunikasi</h3>
+                <p class="text-xs text-slate-500 mt-1">Tentukan jenis komunikasi yang didistribusikan ke kontak perusahaan.</p>
+              </div>
+
+              <!-- Registered Contact Info -->
+              <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                <div>
+                  <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Kontak Utama (Email & WhatsApp)</span>
+                  <span class="text-xs font-bold text-slate-800 block mt-0.5" id="pref-contact-display">budi.s@globalniaga.co.id • +62 812-3456-7890</span>
+                </div>
+                <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Terverifikasi</span>
+              </div>
+
+              <!-- Communication Purposes Toggles -->
+              <div class="space-y-4 pt-2">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-800">Informasi Regulasi & Kebijakan Impor</h4>
+                    <p class="text-[11px] text-slate-500">Penting bagi kepatuhan kepabeanan Anda</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="pref-regulasi" checked class="sr-only peer">
+                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ginsi-blue"></div>
+                  </label>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-800">Program Kemitraan & Akselerasi GINSI-ORCA</h4>
+                    <p class="text-[11px] text-slate-500">Peluang insentif dan fasilitas jalur cepat</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="pref-kemitraan" checked class="sr-only peer">
+                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ginsi-blue"></div>
+                  </label>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-800">Undangan Event, Webinar & Sosialisasi</h4>
+                    <p class="text-[11px] text-slate-500">Jadwal seminar dan pelatihan importir</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="pref-event" class="sr-only peer">
+                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ginsi-blue"></div>
+                  </label>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-800">Survei & Riset Kebutuhan Importir</h4>
+                    <p class="text-[11px] text-slate-500">Evaluasi kepuasan layanan berkala</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="pref-survei" class="sr-only peer">
+                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ginsi-blue"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT COL: Kanal & Opsi Penahanan -->
+            <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-6">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Kanal & Opsi Penahanan (Channels & Suppression)</h3>
+                <p class="text-xs text-slate-500 mt-1">Pilih metode pengiriman dan kontrol privasi data Anda.</p>
+              </div>
+
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-800">Kirim melalui Email</h4>
+                    <p class="text-[11px] text-slate-500">Pemberitahuan resmi dan dokumen via email</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="channel-email" checked class="sr-only peer">
+                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ginsi-blue"></div>
+                  </label>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-800">Kirim melalui WhatsApp</h4>
+                    <p class="text-[11px] text-slate-500">Notifikasi darurat dan pengingat jadwal verifikasi</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="channel-wa" checked class="sr-only peer">
+                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ginsi-blue"></div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Global Suppression -->
+              <div class="pt-4 border-t border-slate-100 space-y-3">
+                <span class="text-xs font-bold text-slate-700 block">Penahanan Global (Global Suppression)</span>
+                <label class="flex items-start gap-2.5 cursor-pointer bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <input type="checkbox" id="pref-suppression" class="mt-0.5 rounded text-ginsi-blue focus:ring-ginsi-blue">
+                  <div class="text-[11px] text-slate-600 leading-relaxed">
+                    <strong class="text-slate-800">Tolak Semua Komunikasi Non-Transaksional (Opt-Out)</strong><br>
+                    <span>Anda hanya akan menerima notifikasi status verifikasi berkas legalitas dan tiket kepabeanan penting.</span>
+                  </div>
+                </label>
+
+                <!-- Sync notice -->
+                <div class="flex items-center gap-2 text-xs text-slate-500 pt-1">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span>Terakhir disinkronkan ke ORCA CRM: <strong>Aktif</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Action Bar -->
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <span class="text-xs text-slate-500">
+              Catatan: Perubahan preferensi langsung diperbarui dan diterapkan untuk seluruh PIC yang terdaftar.
+            </span>
+            <div class="flex items-center gap-3">
+              <button onclick="resetPreferences()" class="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 transition">
+                Reset
+              </button>
+              <button onclick="savePreferences()" class="px-5 py-2 text-xs font-bold rounded-lg bg-ginsi-blue hover:bg-ginsi-darkblue text-white transition shadow-sm flex items-center gap-2">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT APP CONTROLLER                                                 -->
+  <!-- ========================================================================= -->
+  <script>
+    // Global User State (Updated dynamically by ANY email login)
+    let currentUser = {
+      name: 'Budi Santoso',
+      email: 'budi.santoso@globalniaga.co.id',
+      role: 'Pemilik / Direktur',
+      initials: 'BS'
+    };
+
+    let currentTab = 'dashboard';
+
+    const tabConfig = {
+      'dashboard': { title: 'Dashboard', sub: 'Ringkasan Aktivitas' },
+      'my-company': { title: 'My Company', sub: 'Profil Perusahaan' },
+      'contacts': { title: 'Kontak & PIC', sub: 'Daftar PIC' },
+      'tasks': { title: 'Tugas Saya', sub: 'Pekerjaan Mendesak' },
+      'requests': { title: 'Permintaan Saya', sub: 'Status Tiket & Pengajuan' },
+      'programs': { title: 'Kebutuhan & Program', sub: 'Program Akselerasi' },
+      'documents': { title: 'Pusat Dokumen', sub: 'Document Hub' },
+      'preferences': { title: 'Pusat Preferensi', sub: 'Pengaturan Kontak & Kanal' }
+    };
+
+    // Helper: Generate display name from any email format
+    function deriveNameFromEmail(email) {
+      if (!email || !email.includes('@')) return 'Pengguna GINSI';
+      const localPart = email.split('@')[0];
+      // replace dots, hyphens, underscores, numbers with spaces
+      const clean = localPart.replace(/[._\-+]/g, ' ').replace(/[0-9]/g, '');
+      const words = clean.trim().split(/\s+/).filter(w => w.length > 0);
+      if (words.length === 0) return localPart.toUpperCase();
+      
+      return words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+    }
+
+    // Helper: Generate 2 letter initials
+    function deriveInitials(name) {
+      const parts = name.trim().split(/\s+/);
+      if (parts.length >= 2) {
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+      }
+      return name.substring(0, 2).toUpperCase();
+    }
+
+    // Update entire UI with current user profile
+    function syncUserProfileToUI() {
+      // 1. Top Navbar
+      const nameEl = document.getElementById('user-display-name');
+      const roleEl = document.getElementById('user-display-role');
+      const initialsEl = document.getElementById('user-avatar-initials');
+      const dropdownEmail = document.getElementById('dropdown-user-email');
+
+      if (nameEl) nameEl.textContent = currentUser.name;
+      if (roleEl) roleEl.textContent = currentUser.role;
+      if (initialsEl) initialsEl.textContent = currentUser.initials;
+      if (dropdownEmail) dropdownEmail.textContent = currentUser.email;
+
+      // 2. Greeting Dashboard
+      const greetingEl = document.getElementById('greeting-title');
+      if (greetingEl) {
+        greetingEl.textContent = `Selamat datang kembali, ${currentUser.name.split(' ')[0]}`;
+      }
+
+      // 3. Contacts Table First Row (Current user contact)
+      const cName = document.getElementById('contact-row1-name');
+      const cRole = document.getElementById('contact-row1-role');
+      const cEmail = document.getElementById('contact-row1-email');
+      const cInitials = document.getElementById('contact-row1-initials');
+
+      if (cName) cName.textContent = currentUser.name;
+      if (cRole) cRole.textContent = `(${currentUser.role})`;
+      if (cEmail) cEmail.textContent = currentUser.email;
+      if (cInitials) cInitials.textContent = currentUser.initials;
+
+      // 4. Preference Center info
+      const prefContact = document.getElementById('pref-contact-display');
+      if (prefContact) {
+        prefContact.textContent = `${currentUser.email} • +62 812-3456-7890`;
+      }
+    }
+
+    // Authentication: Handle ANY email login
+    function handleAuthLogin(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('login-email').value.trim();
+      if (!emailInput) {
+        showToast('Login Gagal', 'Silakan masukkan email Anda.', 'error');
+        return;
+      }
+
+      // Set user dynamically from email
+      const generatedName = deriveNameFromEmail(emailInput);
+      currentUser.email = emailInput;
+      currentUser.name = generatedName;
+      currentUser.initials = deriveInitials(generatedName);
+      currentUser.role = 'PIC Importer / Direksi';
+
+      syncUserProfileToUI();
+
+      // Show toast and switch to portal
+      showToast('Login Berhasil!', `Selamat datang di portal GINSI, ${currentUser.name}.`, 'success');
+      document.getElementById('view-auth').classList.add('hidden');
+      switchTab('dashboard');
+    }
+
+    // Authentication: Handle registration with any email
+    function handleAuthRegister(e) {
+      e.preventDefault();
+      const fullName = document.getElementById('reg-fullname').value.trim();
+      const role = document.getElementById('reg-nickname').value.trim() || 'Staf Impor';
+      const email = document.getElementById('reg-email').value.trim();
+
+      currentUser.name = fullName || deriveNameFromEmail(email);
+      currentUser.email = email;
+      currentUser.role = role;
+      currentUser.initials = deriveInitials(currentUser.name);
+
+      syncUserProfileToUI();
+
+      showToast('Pendaftaran Berhasil!', `Akun ${currentUser.email} berhasil didaftarkan dan langsung masuk.`, 'success');
+      document.getElementById('view-auth').classList.add('hidden');
+      switchTab('dashboard');
+    }
+
+    // Toggle between login and sign up forms
+    function showSignUp() {
+      document.getElementById('loginForm').classList.add('hidden');
+      document.getElementById('signUpForm').classList.remove('hidden');
+    }
+
+    function showLogin() {
+      document.getElementById('signUpForm').classList.add('hidden');
+      document.getElementById('loginForm').classList.remove('hidden');
+    }
+
+    // Logout: return to Werdience Inc authentication view
+    function handleLogout() {
+      const dropdown = document.getElementById('user-dropdown-menu');
+      if (dropdown) dropdown.classList.add('hidden');
+      document.getElementById('view-auth').classList.remove('hidden');
+      showToast('Sesi Berakhir', 'Anda telah keluar dari Portal GINSI Importer Connect.', 'info');
+    }
+
+    function toggleUserDropdown() {
+      const dropdown = document.getElementById('user-dropdown-menu');
+      dropdown.classList.toggle('hidden');
+    }
+
+    function triggerProfilePhotoUpload() {
+      const input = document.getElementById('profile-photo-input');
+      if (input) input.click();
+    }
+
+    function handleProfilePhotoUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const avatar = document.getElementById('user-avatar-initials');
+        if (!avatar) return;
+
+        avatar.innerHTML = '';
+        avatar.classList.add('overflow-hidden');
+
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.alt = 'Foto profil pengguna';
+        img.className = 'w-full h-full object-cover rounded-full';
+        avatar.appendChild(img);
+
+        showToast('Foto Profil Diperbarui', `Foto profil berhasil diubah menjadi ${file.name}.`, 'success');
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    // Close user dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('#user-avatar-initials');
+      const menu = document.getElementById('user-dropdown-menu');
+      if (!btn && !e.target.closest('#user-dropdown-menu') && menu && !menu.classList.contains('hidden')) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    // Tab Navigation Switcher
+    function switchTab(tabId) {
+      if (!tabConfig[tabId]) return;
+      currentTab = tabId;
+
+      // Update Nav Link styling
+      document.querySelectorAll('.nav-item').forEach(el => {
+        el.classList.remove('bg-ginsi-blue', 'text-white', 'shadow-sm');
+        el.classList.add('text-slate-400');
+      });
+
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      if (activeNav) {
+        activeNav.classList.add('bg-ginsi-blue', 'text-white', 'shadow-sm');
+        activeNav.classList.remove('text-slate-400');
+      }
+
+      // Hide all views, display active view
+      document.querySelectorAll('main > section').forEach(sec => {
+        sec.classList.add('hidden');
+      });
+      const activeSection = document.getElementById(`view-${tabId}`);
+      if (activeSection) {
+        activeSection.classList.remove('hidden');
+      }
+
+      // Update Breadcrumbs
+      const breadcrumbCurrent = document.getElementById('breadcrumb-current');
+      if (breadcrumbCurrent) {
+        breadcrumbCurrent.textContent = tabConfig[tabId].title;
+      }
+
+      // Close mobile sidebar if open
+      const sidebar = document.getElementById('main-sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      if (!sidebar.classList.contains('-translate-x-full')) {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Toggle Mobile Sidebar
+    function toggleSidebar() {
+      const sidebar = document.getElementById('main-sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      const isClosed = sidebar.classList.contains('-translate-x-full');
+
+      if (isClosed) {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      }
+    }
+
+    // Modal Handlers
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function openUploadModal(docType) {
+      document.getElementById('doc-type-input').value = docType;
+      document.getElementById('file-label-text').textContent = `Klik untuk memilih berkas untuk "${docType}"`;
+      openModal('modal-upload-dokumen');
+    }
+
+    function previewUploadedFile(input) {
+      if (input.files && input.files[0]) {
+        document.getElementById('file-label-text').textContent = `File dipilih: ${input.files[0].name}`;
+      }
+    }
+
+    function handleUploadDoc(e) {
+      e.preventDefault();
+      const docType = document.getElementById('doc-type-input').value;
+      closeModal('modal-upload-dokumen');
+      showToast('Dokumen Terkirim', `Berkas untuk "${docType}" berhasil diunggah dan sedang ditinjau verifikator.`, 'success');
+    }
+
+    // Add Contact Handler
+    function handleTambahKontak(e) {
+      e.preventDefault();
+      const name = document.getElementById('contact-name').value;
+      const role = document.getElementById('contact-role').value;
+      const email = document.getElementById('contact-email').value;
+      const phone = document.getElementById('contact-phone').value;
+      const access = document.getElementById('contact-access').value;
+
+      const tbody = document.getElementById('contact-table-body');
+      const initials = deriveInitials(name);
+
+      const tr = document.createElement('tr');
+      tr.className = 'hover:bg-slate-50/70 transition contact-row fade-in';
+      tr.setAttribute('data-name', name);
+      tr.setAttribute('data-status', 'aktif');
+      tr.innerHTML = `
+        <td class="py-3.5 px-4">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-blue-100 text-ginsi-blue font-bold flex items-center justify-center text-xs">${initials}</div>
+            <div>
+              <div class="font-bold text-slate-800 text-sm">${name} <span class="text-xs font-normal text-slate-500">(${role})</span></div>
+              <div class="text-slate-500 flex items-center gap-3 mt-0.5 text-[11px]">
+                <span><i class="fa-regular fa-envelope mr-1 text-slate-400"></i>${email}</span>
+                <span><i class="fa-solid fa-phone mr-1 text-slate-400"></i>${phone}</span>
+              </div>
+            </div>
+          </div>
+        </td>
+        <td class="py-3.5 px-4">
+          <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md font-semibold text-[11px]">${access}</span>
+        </td>
+        <td class="py-3.5 px-4">
+          <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-md font-bold text-[11px]">Terverifikasi</span>
+        </td>
+        <td class="py-3.5 px-4 text-right">
+          <button onclick="editContact('${name}')" class="text-slate-400 hover:text-ginsi-blue p-1.5 rounded hover:bg-slate-100">
+            <i class="fa-solid fa-pen-to-square"></i> Edit
+          </button>
+        </td>
+      `;
+
+      tbody.appendChild(tr);
+
+      const totalCount = document.getElementById('contact-count-total');
+      const verifiedCount = document.getElementById('contact-count-verified');
+      const dashCount = document.getElementById('dash-contact-summary');
+      if (totalCount) totalCount.textContent = parseInt(totalCount.textContent) + 1;
+      if (verifiedCount) verifiedCount.textContent = parseInt(verifiedCount.textContent) + 1;
+      if (dashCount) dashCount.textContent = totalCount.textContent;
+
+      closeModal('modal-tambah-kontak');
+      document.getElementById('form-tambah-kontak').reset();
+      showToast('Kontak Ditambahkan', `PIC baru ${name} berhasil disimpan ke sistem portal.`, 'success');
+    }
+
+    function editContact(name) {
+      showToast('Edit Kontak', `Form perubahan data untuk ${name} dibuka.`);
+    }
+
+    // Create Request Handler
+    async function handleBuatPermintaan(e) {
+      e.preventDefault();
+
+      // Ambil data dari form
+      const title = document.getElementById('req-title').value.trim();
+      const category = document.getElementById('req-category').value;
+      const desc = document.getElementById('req-desc').value.trim();
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+
+      // Ubah tombol jadi loading
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim ke ORCA...';
+
+      // Siapkan data Payload
+      const payload = {
+        company_name: "PT. Global Niaga Jaya",
+        category: category,
+        title: title,
+        description: desc
+      };
+
+      try {
+        // Kirim data ke API ORCA CRM (menggunakan endpoint localhost yang baru dibuat)
+        const response = await fetch('http://localhost:3000/api/requests', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          // Tutup modal dan reset form
+          closeModal('modal-buat-permintaan');
+          document.getElementById('form-buat-permintaan').reset();
+
+          // Tambahkan tiket baru ke antarmuka (DOM) menggunakan ID dari ORCA
+          const container = document.getElementById('request-list-container');
+          const card = document.createElement('div');
+          card.className = 'request-item bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-slate-300 transition fade-in';
+          card.setAttribute('data-status', 'sedang-diproses');
+          card.setAttribute('data-type', 'all');
+
+          card.innerHTML = `
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">${title}</h3>
+                <div class="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                  <span class="font-mono font-semibold text-slate-700">${result.ticket_id}</span>
+                  <span>•</span>
+                  <span>Kategori: <strong>${category}</strong></span>
+                  <span>•</span>
+                  <span>Baru saja</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded-md text-xs font-bold">
+                  ${result.status}
+                </span>
+                <button onclick="showToast('Detail Permintaan', 'Tiket ${result.ticket_id}: Telah diterima oleh ORCA CRM.')" class="text-xs text-slate-600 hover:text-ginsi-blue font-semibold">
+                  Lihat Detail
+                </button>
+              </div>
+            </div>
+          `;
+
+          container.insertBefore(card, container.firstChild);
+          showToast('Permintaan Terkirim', `Tiket ${result.ticket_id} berhasil masuk ke ORCA CRM.`, 'success');
+        } else {
+          showToast('Gagal Mengirim', result.message || 'Terjadi kesalahan sistem.', 'error');
+        }
+      } catch (err) {
+        showToast('Koneksi Gagal', 'Server ORCA CRM tidak merespon. Pastikan server Node.js berjalan.', 'error');
+      } finally {
+        // Kembalikan tombol seperti semula
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
+    }
+
+    // Contact Filters
+    let contactActiveStatus = 'semua';
+    function setContactFilter(status) {
+      contactActiveStatus = status;
+      ['semua', 'aktif', 'verifikasi'].forEach(st => {
+        const btn = document.getElementById(`btn-pic-${st}`);
+        if (btn) {
+          if (st === status) {
+            btn.className = 'px-2.5 py-1 rounded font-semibold bg-ginsi-blue text-white transition';
+          } else {
+            btn.className = 'px-2.5 py-1 rounded font-semibold text-slate-600 hover:bg-slate-100 transition';
+          }
+        }
+      });
+      filterContacts();
+    }
+
+    function filterContacts() {
+      const query = (document.getElementById('contact-search-input').value || '').toLowerCase();
+      const rows = document.querySelectorAll('.contact-row');
+
+      rows.forEach(row => {
+        const name = (row.getAttribute('data-name') || '').toLowerCase();
+        const status = row.getAttribute('data-status');
+        const matchesQuery = name.includes(query);
+        const matchesStatus = (contactActiveStatus === 'semua') || (status === contactActiveStatus);
+
+        row.style.display = (matchesQuery && matchesStatus) ? '' : 'none';
+      });
+    }
+
+    // Task Filter Tabs
+    let currentTaskCat = 'all';
+    function setTaskCategory(cat) {
+      currentTaskCat = cat;
+      ['all', 'butuh-perhatian', 'sedang-ditinjau', 'belum-mulai'].forEach(c => {
+        const btn = document.getElementById(`btn-task-${c}`);
+        if (btn) {
+          if (c === cat) {
+            btn.className = 'px-3.5 py-2 rounded-lg font-bold bg-ginsi-blue text-white shadow-sm whitespace-nowrap';
+          } else {
+            btn.className = 'px-3.5 py-2 rounded-lg font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 whitespace-nowrap';
+          }
+        }
+      });
+      filterTasks();
+    }
+
+    function filterTasks() {
+      const priority = document.getElementById('task-priority-filter').value;
+      const tasks = document.querySelectorAll('.task-card');
+
+      tasks.forEach(card => {
+        const cat = card.getAttribute('data-category');
+        const prio = card.getAttribute('data-priority');
+        const matchCat = (currentTaskCat === 'all') || (cat === currentTaskCat);
+        const matchPrio = (priority === 'all') || (prio === priority);
+
+        card.style.display = (matchCat && matchPrio) ? '' : 'none';
+      });
+    }
+
+    // Request Filter Tabs
+    let currentReqCat = 'all';
+    function setRequestCategory(cat) {
+      currentReqCat = cat;
+      ['all', 'butuh-perbaikan', 'sedang-diproses', 'selesai'].forEach(c => {
+        const btn = document.getElementById(`btn-req-${c}`);
+        if (btn) {
+          if (c === cat) {
+            btn.className = 'px-3.5 py-2 rounded-lg font-bold bg-ginsi-blue text-white shadow-sm whitespace-nowrap';
+          } else {
+            btn.className = 'px-3.5 py-2 rounded-lg font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 whitespace-nowrap';
+          }
+        }
+      });
+      filterRequests();
+    }
+
+    function filterRequests() {
+      const type = document.getElementById('req-type-filter').value;
+      const items = document.querySelectorAll('.request-item');
+
+      items.forEach(card => {
+        const status = card.getAttribute('data-status');
+        const reqType = card.getAttribute('data-type');
+        const matchStatus = (currentReqCat === 'all') || (status === currentReqCat);
+        const matchType = (type === 'all') || (reqType === type) || (reqType === 'all');
+
+        card.style.display = (matchStatus && matchType) ? '' : 'none';
+      });
+    }
+
+    // Preference Center Actions
+    function savePreferences() {
+      showToast('Preferensi Tersimpan', 'Pengaturan saluran komunikasi dan penahanan global telah disinkronkan ke ORCA CRM.', 'success');
+    }
+
+    function resetPreferences() {
+      document.getElementById('pref-regulasi').checked = true;
+      document.getElementById('pref-kemitraan').checked = true;
+      document.getElementById('pref-event').checked = false;
+      document.getElementById('pref-survei').checked = false;
+      document.getElementById('channel-email').checked = true;
+      document.getElementById('channel-wa').checked = true;
+      document.getElementById('pref-suppression').checked = false;
+      showToast('Preferensi Direset', 'Pengaturan dikembalikan ke konfigurasi default portal.');
+    }
+
+    function downloadMockDoc(filename) {
+      showToast('Mengunduh Berkas', `Memulai unduhan untuk dokumen ${filename}...`, 'success');
+    }
+
+    function downloadRingkasan() {
+      showToast('Unduh Ringkasan', 'Mengunduh berkas "Ringkasan_Legalitas_PT_GlobalNiagaJaya.pdf"...', 'success');
+    }
+
+    // Global Top Search Bar Router
+    function handleGlobalSearch(query) {
+      const q = (query || '').toLowerCase().trim();
+      if (!q) return;
+
+      if (q.includes('dokumen') || q.includes('nib') || q.includes('npwp') || q.includes('akta')) {
+        switchTab('documents');
+      } else if (q.includes('pic') || q.includes('kontak') || q.includes('budi') || q.includes('siti')) {
+        switchTab('contacts');
+      } else if (q.includes('tugas') || q.includes('perbaikan') || q.includes('amdal')) {
+        switchTab('tasks');
+      } else if (q.includes('program') || q.includes('impor') || q.includes('orca')) {
+        switchTab('programs');
+      } else if (q.includes('preferensi') || q.includes('whatsapp') || q.includes('email')) {
+        switchTab('preferences');
+      }
+    }
+
+    // Toast Notification Generator
+    function showToast(title, message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'pointer-events-auto bg-slate-900 text-white rounded-xl shadow-2xl p-4 flex items-start gap-3 max-w-sm w-full fade-in border border-slate-700/60';
+
+      let icon = '<i class="fa-solid fa-circle-info text-blue-400 text-base"></i>';
+      if (type === 'success') {
+        icon = '<i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>';
+      } else if (type === 'error') {
+        icon = '<i class="fa-solid fa-circle-xmark text-rose-400 text-base"></i>';
+      }
+
+      toast.innerHTML = `
+        <div class="mt-0.5">${icon}</div>
+        <div class="flex-1">
+          <h4 class="text-xs font-bold text-white">${title}</h4>
+          <p class="text-[11px] text-slate-300 mt-0.5 leading-snug">${message}</p>
+        </div>
+        <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+      `;
+
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    // Initialize application on load
+    window.addEventListener('DOMContentLoaded', () => {
+      syncUserProfileToUI();
+    });
+  </script>
+</body>
+</html>
